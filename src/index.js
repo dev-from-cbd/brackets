@@ -1,25 +1,16 @@
-module.exports = function check(str, bracketsConfig) {
-  let openBrackets = [];
-  for (let i = 0; i < bracketsConfig.length; i++) {
-    openBrackets.push(bracketsConfig[i][0]);
-  }
-  let bracketsPair = bracketsConfig.reduce((accum, pair) => {
-    accum[pair[1]] = pair[0];
-    return accum;
-  }, {});
-  let stack = [];
-  for (let i = 0; i < str.length; i++) {
-    let currentSymbol = str[i];
-    if (openBrackets.includes(currentSymbol)) {
-      stack.push(currentSymbol);
-    } else if (
-      stack.length != 0 &&
-      bracketsPair[currentSymbol] === stack[stack.length - 1]
-    ) {
-      stack.pop();
-    } else {
-      return false;
+module.exports = function checkBrackets(str, bracketsConfig) {
+  const bracketStack = [];
+  const bracketMap = new Map(bracketsConfig);
+
+  for (const char of str) {
+    if (bracketMap.has(char)) {
+      bracketStack.push(char);
+    } else if (bracketMap.values().includes(char)) {
+      if (bracketMap.get(bracketStack.pop()) !== char) {
+        return false;
+      }
     }
   }
-  return stack.length === 0;
+
+  return bracketStack.length === 0;
 };
